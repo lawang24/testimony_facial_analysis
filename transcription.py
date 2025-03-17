@@ -2,10 +2,10 @@ import os
 import sys
 import whisper
 
-
-def transcribe_audio_files(company_directory, audio_extension):
+def transcribe_audio_files(company_directory, audio_extension, data_folder):
+    
     # Ensure the company directory exists
-    splits_folder = os.path.join(company_directory, "splits")
+    splits_folder = os.path.join(data_folder, company_directory, "splits")
     if not os.path.isdir(splits_folder):
         print(f"Error: The directory {splits_folder} does not exist.")
         return
@@ -16,6 +16,9 @@ def transcribe_audio_files(company_directory, audio_extension):
     # Iterate over all subdirectories in 'splits'
     for root, dirs, files in os.walk(splits_folder):
         for curr_dir in dirs:
+            
+            print("Processing segment ", curr_dir)
+            
             folder_path = os.path.join(root, curr_dir)
 
             # get the audio path
@@ -42,9 +45,10 @@ def transcribe_audio_files(company_directory, audio_extension):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Usage: python script.py <company_directory> <audio_extension>")
+    if len(sys.argv) != 4:
+        print("Usage: python script.py <company_directory> <audio_extension> <data_folder>")
     else:
         company_directory = sys.argv[1]
         audio_extension = sys.argv[2]
-        transcribe_audio_files(company_directory, audio_extension)
+        data_folder = sys.argv[3]
+        transcribe_audio_files(company_directory, audio_extension, data_folder)

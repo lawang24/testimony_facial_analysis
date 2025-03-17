@@ -59,6 +59,9 @@ if __name__ == "__main__":
             plt.show()
             raise e
         
+        # convert np floats to float
+        analysis['emotion'] = {k: float(v) for k, v in analysis['emotion'].items()}
+        
         # Add the image path to the analysis dictionary
         analysis["image_path"] = source_path
         
@@ -69,4 +72,4 @@ if __name__ == "__main__":
     analysis_df = pd.DataFrame(analysis_results)
     
     # Display or save the resulting DataFrame
-    analysis_df.to_csv(f"{result_path}analysis_results.csv", index=False)
+    analysis_df.to_csv(f"{result_path}analysis_results_emotions.csv", index=False)
