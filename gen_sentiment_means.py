@@ -39,10 +39,10 @@ def generate_sentiment_analysis_points(
     return output
 
 
-def generate_data_points(company_directory):
+def generate_data_points(company_directory, folder):
 
     # Ensure the company directory exists
-    splits_folder = os.path.join(company_directory, "splits")
+    splits_folder = os.path.join(folder,company_directory, "splits")
     if not os.path.isdir(splits_folder):
         print(f"Error: The directory {splits_folder} does not exist.")
         return
@@ -81,12 +81,13 @@ def generate_data_points(company_directory):
         inplace=True,
     )
     average_sentiment_scores.to_csv(
-        f"{company_directory}/segment_sentiment_means.csv", index=False
+        f"{folder}/{company_directory}/segment_sentiment_means.csv", index=False
     )
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python script.py <company_directory>")
+    if len(sys.argv) != 3:
+        print("Usage: python script.py <company_directory> <folder>")
     else:
         company_directory = sys.argv[1]
-        generate_data_points(company_directory)
+        folder = sys.argv[2]
+        generate_data_points(company_directory, folder)

@@ -36,9 +36,9 @@ cd ..
 # break video into frames for facial attribute analysis
 for folder in splits/*/; do
   echo "Processing folder: $folder"
-  mkdir "${folder}/frames"
-  file_name=$(ls ${folder}/*.${VIDEO_EXTENSION})
-  ffmpeg -i $file_name -vf fps=1 "${folder}/frames/frame_%05d.png"
+  mkdir "${folder}frames"
+  file_name=$(ls ${folder}*.${VIDEO_EXTENSION})
+  ffmpeg -i $file_name -vf fps=1 "${folder}frames/frame_%05d.png"
 done
 
 

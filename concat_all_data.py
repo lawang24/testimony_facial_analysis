@@ -2,10 +2,10 @@ import os
 import sys
 import pandas as pd
 
-def merge_data(folder_name):
+def merge_data(company, folder):
     # 1) Identify current script directory and target folder
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    folder_path = os.path.join(current_dir, "data", folder_name)
+    folder_path = os.path.join(current_dir, folder, company)
 
     # 2) Identify file paths
     emotional_file = os.path.join(folder_path, "weighted_emotion_scores.csv")
@@ -68,9 +68,10 @@ def merge_data(folder_name):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python merge_data.py <folder_name>")
+    if len(sys.argv) != 3:
+        print("Usage: python merge_data.py <company> <folder>")
         sys.exit(1)
 
-    folder_name = sys.argv[1]
-    merge_data(folder_name)
+    company = sys.argv[1]
+    folder = sys.argv[2]
+    merge_data(company, folder)

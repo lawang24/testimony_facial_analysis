@@ -15,10 +15,10 @@ def split_text_file(file_path):
     except Exception as e:
         return f"An error occurred: {e}"
 
-def run_sentiment_analysis(company_directory):
+def run_sentiment_analysis(company_directory, folder_name):
    
     # Ensure the company directory exists
-    splits_folder = os.path.join(company_directory, "splits")
+    splits_folder = os.path.join(folder_name,company_directory, "splits")
     if not os.path.isdir(splits_folder):
         print(f"Error: The directory {splits_folder} does not exist.")
         return
@@ -67,8 +67,10 @@ def run_sentiment_analysis(company_directory):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python script.py <company_directory>")
+    if len(sys.argv) != 3:
+        print("Usage: python script.py <company_directory> <folder>")
     else:
         company_directory = sys.argv[1]
-        run_sentiment_analysis(company_directory)
+        folder_name = sys.argv[2]
+        
+        run_sentiment_analysis(company_directory, folder_name)

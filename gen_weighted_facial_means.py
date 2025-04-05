@@ -12,8 +12,12 @@ def generate_emotion_data_points(folder_path, output, segment_name, company_dire
     if not os.path.exists(facial_analysis_data_path):
         return output
 
-    df = pd.read_csv(facial_analysis_data_path)
-
+    try:
+        df = pd.read_csv(facial_analysis_data_path)
+    except pd.errors.EmptyDataError:
+        print("File is empty, continuing without processing.")
+        return output
+        
     # Define emotion polarity
     emotion_score_map = {
         "angry": -1,
@@ -69,8 +73,10 @@ def generate_data_points(company_directory_path, company_dir_name):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python emotion_multi_regression.py <company_directory>")
+    if len(sys.argv) != 3:
+        print("Usage: python emotion_multi_regression.py <company_directory> <folder>")
     else:
         company_directory = sys.argv[1]
-        generate_data_points(f"data/{company_directory}", company_directory)
+        folder = sys.argv[2]
+        
+        generate_data_points(f"{folder}/{company_directory}", company_directory)

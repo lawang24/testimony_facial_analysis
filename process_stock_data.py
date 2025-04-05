@@ -2,6 +2,7 @@ import pandas as pd
 import argparse
 import os
 from datetime import datetime, timedelta
+import sys
 
 def load_and_prepare_data(folder, start_time_str):
     csv_file = os.path.join(folder, 'stock_data.csv')
@@ -23,13 +24,13 @@ def load_and_prepare_data(folder, start_time_str):
 
     return df, start_time
 
-def compute_segments(df, company_name, start_time):
+def compute_segments(df, company_name, start_time, segment_length):
     results = []
     segment_count = 0
 
     while not df.empty:
         # Each segment is 30 minutes long
-        end_time = start_time + timedelta(minutes=30)
+        end_time = start_time + timedelta(seconds=segment_length)
 
         # Extract this 30-minute window
         segment_df = df[(df['timestamp'] >= start_time) & (df['timestamp'] < end_time)].copy()
@@ -44,7 +45,6 @@ def compute_segments(df, company_name, start_time):
         # First and last minute's average ASK price
         first_ask = minute_averages['ASK'].iloc[0]
         last_ask = minute_averages['ASK'].iloc[-1]
-        print(first_ask, last_ask, segment_count)
 
         pct_diff = (last_ask - first_ask) / first_ask * 100
 
@@ -67,23 +67,23 @@ def compute_segments(df, company_name, start_time):
 
     return pd.DataFrame(results)
 
-def main():
-    parser = argparse.ArgumentParser(description="Process stock data into 30-minute segments.")
-    parser.add_argument("company_folder", type=str, help="Path to the company folder (contains stock_data.csv)")
-    parser.add_argument("start_time", type=str, help="Start time (format: HH:MM:SS)")
-    args = parser.parse_args()
-
-    # Extract company name from folder name
-    company_name = os.path.basename(os.path.normpath(args.company_folder))
+def main(company_name, start_time, folder, segment_length):
 
     # Load and filter data
-    df, start_time = load_and_prepare_data(args.company_folder, args.start_time)
+    df, start_time = load_and_prepare_data(f'{folder}/{company_name}', start_time)
 
     # Compute segments
-    result_df = compute_segments(df, company_name, start_time)
+    result_df = compute_segments(df, company_name, start_time, segment_length)
 
     # Save to output CSV
-    result_df.to_csv(f'{args.company_folder}/stock_segments.csv', index=False)
-
+    result_df.to_csv(f'{folder}/{company_name}/stock_segments.csv', index=False)
+    
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) != 5:
+        print("Usage: python process_stock_data.py <company_name> <start_time> <folder> <segment_length>")
+    else:
+        company_name = sys.argv[1]
+        start_time = sys.argv[2] # Start time (format: HH:MM:SS)"
+        folder = sys.argv[3]
+        segment_length = int(sys.argv[4]) # in seconds
+        main(company_name, start_time, folder, segment_length)
