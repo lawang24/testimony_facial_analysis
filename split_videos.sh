@@ -18,7 +18,6 @@ mkdir "splits"
 ffmpeg -i *.${VIDEO_EXTENSION} -c copy -map 0 -f segment -segment_time $SEGMENT_LENGTH -reset_timestamps 1 "splits/output%03d.${VIDEO_EXTENSION}"
 
 # Split downloaded audio 
-# MAKE SURE EXTENSION ALIGNS
 mkdir 'split_audios'
 ffmpeg -i *.${AUDIO_EXTENSION} -f segment -segment_time $SEGMENT_LENGTH -c copy -reset_timestamps 1 "split_audios/output%03d.${AUDIO_EXTENSION}"
 cd "splits"
@@ -40,7 +39,6 @@ for folder in splits/*/; do
   file_name=$(ls ${folder}*.${VIDEO_EXTENSION})
   ffmpeg -i $file_name -vf fps=1 "${folder}frames/frame_%05d.png"
 done
-
 
 rm -rf split_audios
 
